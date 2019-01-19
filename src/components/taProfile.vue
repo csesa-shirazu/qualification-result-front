@@ -14,7 +14,8 @@
           <div class="container" id="ta-qualification">
               
               <div class="ta-qualification-col ta-qualification-col-first">
-                  <div class="ta-qualification-col-content" v-for="qualification in apidata" @click="selectedQualification = qualification">
+                  <div class="ta-qualification-col-content" :data-content="'از ' + qualification.participant_count + ' رای'" data-position="top right" v-for="qualification in apidata" @click="selectedQualification = qualification">
+                    
                     <div class="course-title" :class="{'active': selectedQualification==qualification}">
                       {{ qualification.course }}
                     </div>
@@ -138,6 +139,10 @@ export default {
           })
 
           vinst.selectedQualification = response.data[0];
+
+          $(document).ready(function(){
+              $('.ta-qualification-col-content').popup();
+          });
           vinst.loading = false;
 
         })
