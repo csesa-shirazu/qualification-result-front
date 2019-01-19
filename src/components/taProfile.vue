@@ -118,6 +118,9 @@ export default {
       }
     };
   },
+  props:[
+      'alignFooter'
+  ],
   methods: {
     getGraderProfile: function(){
       let vinst = this;
@@ -146,6 +149,9 @@ export default {
 
         })
     }
+  },
+  updated(){
+    this.alignFooter();
   }
 }
 </script>
