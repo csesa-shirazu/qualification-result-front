@@ -1,7 +1,7 @@
 <template>
   <div class="ui contaienr" id="ta-profile-container">
-    <div v-if="appState == 'initial'">
-        fweawefawe
+    <div v-if="appState == 'initial'" style="text-align: center; padding-top:30px">
+        نام گریدر را از منوی بالا انتخاب کنید
     </div>
     <div v-else-if="appState == 'grader-is-set'">
         <div v-if="loading" class="ui active inverted dimmer">
