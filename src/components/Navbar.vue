@@ -5,7 +5,7 @@
                 <div class="ui text loader">Loading</div>
         </div>
         <div v-else class="right item" dir="rtl" style="padding: 0px;">
-            <select class="ui fluid search dropdown rtl">
+            <select class="ui search dropdown rtl">
                 <option value="" active>جستجوی گریدر</option>
                 <option v-for="grader in apidata.graders" :value="grader.id">
                     {{grader.first_name + ' ' + grader.last_name }}
@@ -48,6 +48,7 @@
                                 animate({'opacity': 0.95}, 100);
                         })
                         $('#nav div.ui.dropdown input').blur(function(){
+                            if($(window).width() >= 768)
                             $('#nav div.ui.dropdown').
                                 animate({'opacity': 0.5}, 100);
                         })
@@ -78,12 +79,31 @@
 #nav div.ui.dropdown {
     border: 1px solid white;
     border-radius: 10px;
-    opacity: 0.5;
 }
 
-#nav .ui.dropdown{
-    min-width: 400px;
+@media screen and (min-width: 768px){
+    #nav div.ui.dropdown {
+        opacity: 0.5;
+    }
+    #nav .ui.dropdown{
+        width: 100%;
+    }
+    #nav .right.item{
+        width: 40%;
+        margin-right: 30px;
+    }
 }
+
+@media screen and (max-width: 767px){
+    #nav .ui.dropdown{
+        width: 100%;
+    }
+    #nav .right.item{
+        margin: auto;
+        width: 80%;
+    }
+}
+
 #nav .rtl {
     flex-direction: row-reverse;
     text-align: right;
