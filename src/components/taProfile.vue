@@ -206,7 +206,7 @@ export default {
 #ta-qualification .ta-qualification-col-content{
   width: 100%;
   height: 100%;
-  margin: 0px;
+  margin: 5px 0px;
   display: flex;
   flex-wrap: wrap;
   align-self: flex-start;
