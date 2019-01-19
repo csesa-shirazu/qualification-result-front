@@ -13,12 +13,30 @@ Vue.use(VueAxios, axios);
 export const store = new Vuex.Store({
   state: {
     hostUrl: host_url,
+    appState: 'initial',
+    graderId: 0,
   },
   getters: {
+    appState: state => {
+      return state.appState;
+    },
+    graderId: state => {
+      return state.graderId;
+    }
   },
   mutations: {
+    setAppState (state, appState) {
+      state.appState = appState
+    },
+    setGraderId (state, graderId) {
+      state.graderId = graderId
+    }
   },
   actions: {
+    setGrader (context, graderId){
+      context.commit('setGraderId', graderId)
+      context.commit('setAppState', 'grader-is-set')
+    }
   }
 })
 

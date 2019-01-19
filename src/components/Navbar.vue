@@ -1,12 +1,12 @@
 <template>
-    <div id="nav" class="ui large inverted pointing menu fixed secondary" style="border-bottom: 0px;">
-
-        <div class="ui container contentnav">
+    
+    <div id="nav" class="ui large inverted pointing menu secondary" style="border-bottom: 0px;">
+        <div v-if="loading" class="ui active inverted dimmer">
+                <div class="ui text loader">Loading</div>
+        </div>
+        <div v-else class="ui container contentnav">
             <div class="right item" dir="rtl">
-                <div v-if="loading">
-                    Loading
-                </div>
-                <select v-else class="ui fluid search dropdown rtl">
+                <select class="ui fluid search dropdown rtl">
                     <option value="" active>جستجوی گریدر</option>
                     <option v-for="grader in apidata.graders" :value="grader.id">
                         {{grader.first_name + ' ' + grader.last_name }}
@@ -30,17 +30,24 @@
             };
         },
         methods: {
+            chooseGrader: function(val){
+                this.$store.dispatch('setGrader', val)
+            },
             getData: function(){
                 let vinst = this;
                 axios.get(this.$store.state.hostUrl + '/api/v1/courses-data/')
                   .then(function (response) {
 
                     vinst.loading = false;
-                    $(document).ready(function(){
-                        $('.ui.dropdown').dropdown();
-                    })
-
                     vinst.apidata = response.data;
+
+                    $(document).ready(function(){
+                        $('.ui.dropdown').dropdown({
+                            onChange: function(val) {
+                                vinst.chooseGrader(Number(val));
+                            }
+                        });
+                    })
 
                   })
                   .catch(function (error) {
@@ -56,7 +63,7 @@
     }
 </script>
 
-<style scoped>
+<style>
 #nav {
     /* Style for "Rectangle" */
     width: 100%;
@@ -68,22 +75,22 @@
 #nav .ui.dropdown{
     min-width: 400px;
 }
-.rtl {
+#nav .rtl {
     flex-direction: row-reverse;
     text-align: right;
     direction: rtl;
 }
-.ui.dropdown.rtl .menu>.item {
+#nav .ui.dropdown.rtl .menu>.item {
     text-align: right;
 }
-.ui.dropdown input.search,
-.ui.dropdown.rtl .text{
+#nav .ui.dropdown input.search,
+#nav .ui.dropdown.rtl .text{
     text-align: right;
 }
-.ui.dropdown.rtl .ui.label,
-.ui.dropdown.rtl .default.text,
-.ui.dropdown.rtl input.search,
-.ui.dropdown.rtl .text{
+#nav .ui.dropdown.rtl .ui.label,
+#nav .ui.dropdown.rtl .default.text,
+#nav .ui.dropdown.rtl input.search,
+#nav .ui.dropdown.rtl .text{
     float: right;
     right: 0px;
 }
