@@ -8,49 +8,38 @@
             <div class="ui text loader">Loading</div>
         </div>
         <div v-else>
-          <div style="text-align: right;">
+          <div style="text-align: right; padding: 17px 60px 17px 0px;">
             درس های تدریس کرده
           </div>
-          <div class="container" id="ta-qualification" style="margin: 30px auto;
-                  width: 90%; text-align: center;
-                  display: flex; flex-wrap: wrap">
+          <div class="container" id="ta-qualification">
               
-              <div class="ta-qualification-col" style="background: transparent;
-                      border: 2px solid #707070;
-                      display: flex; flex-wrap: wrap; padding: 10px;">
-                  <div
-                  style="width: 100%; display: flex; flex-wrap: wrap; "
-                  v-for="qualification in apidata"
-                  @click="selectedQualification = qualification">
+              <div class="ta-qualification-col ta-qualification-col-first">
+                  <div class="ta-qualification-col-content" v-for="qualification in apidata" @click="selectedQualification = qualification">
                     <div class="course-title" :class="{'active': selectedQualification==qualification}">
                       {{ qualification.course }}
                     </div>
                     <div class="course-total-score" :class="{'active': selectedQualification==qualification}">
                       <div style="margin: auto">
-                        85%
+                        <template v-if="isNaN(qualification.total)">
+                          -
+                        </template>
+                        <template v-else>
+                          {{ qualification.total }}%
+                        </template>
                       </div>
                     </div>
                   </div>
               </div>
 
-              <div class="ta-qualification-col" style="background: transparent;
-                      border: 2px solid #707070;
-                      display: flex; flex-wrap: wrap; padding: 10px;">
-                      <div style="
-                        width: 220px;
-                        height: 50px;
-                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-                        border-radius: 35px;
-                        background-color: #4a4a4a; margin-top: -97px; display: flex; flex-wrap: wrap">
-                        <div style="margin: auto">
-                          امتیازات
-                        </div>
-                      </div>
-                  <div
-                  style="width: 100%; display: flex; flex-wrap: wrap; "
-                  v-for="qa in selectedQualification.scores">
+              <div class="ta-qualification-col ta-qualification-col-second">
+                  <div class="ta-qualification-col-header">
+                    <div style="margin: auto">
+                      امتیازات
+                    </div>
+                  </div>
+                  <div class="ta-qualification-col-content" v-for="qa in selectedQualification.scores">
                     <div class="question-body">
-                      <div style="margin: auto">
+                      <div style="margin: auto; margin-right: 10px;">
                         {{ qa.question }}
                       </div>
                     </div>
@@ -65,37 +54,34 @@
                       </div>
                     </div>
                   </div>
+                  <div class="ta-total-score-container">
+                    <div class="ta-total-score-text">
+                    امتیاز در درس
+                    </div>
+                    <div class="ta-total-score">
+                      <template v-if="isNaN(selectedQualification.total)">
+                        -
+                      </template>
+                      <template v-else>
+                        {{ selectedQualification.total }}%
+                      </template>
+                    </div>
+                  </div>
               </div>
 
-              <div class="ta-qualification-col" style="background: transparent;
-                      border: 2px solid #707070;
-                      display: flex; flex-wrap: wrap; padding: 10px;">
-                      <div style="
-                        width: 220px;
-                        height: 50px;
-                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-                        border-radius: 35px;
-                        background-color: #4a4a4a; margin-top: -97px; display: flex; flex-wrap: wrap">
+              <div class="ta-qualification-col ta-qualification-col-third">
+                      <div class="ta-qualification-col-header">
                         <div style="margin: auto">
                           نظرات
                         </div>
                       </div>
-                  <template v-for="qualification in apidata">
-                    <div class="course-title">
-                      {{ qualification.course }}
-                    </div>
-                    <div style="width: 10%; margin: 0px auto; border-radius: 35px;">
-                      85%
-                    </div>
-                  </template>
+                      <div
+                      style="text-align: center; line-height: 30px;
+                      font-size: 16px;">
+                      نظرات به صورت عمومی قابل نمایش نیستند
+                      </div>
               </div>
           </div>
-          <!-- <div v-for="qualification in apidata">
-              {{ qualification.course }}
-              <div v-for="score in qualification.scores">
-                  {{ score.question }} | {{ score.answer }} | {{ score.count }}
-              </div>
-          </div> -->
         </div>
     </div>
   </div>
@@ -137,7 +123,17 @@ export default {
         .then(function (response) {
           console.log(response.data)
           vinst.apidata = response.data;
-          vinst.selectedQualification = response.data[0]
+          vinst.apidata.forEach(qualification => {
+            let sum = 0;
+            let coeff = 0;
+            qualification.scores.forEach(element => {
+              sum += Number(element.answer) * Number(element.coeff);
+              coeff += Number(element.coeff);
+            });
+            qualification.total = Math.round(sum / coeff);
+          })
+
+          vinst.selectedQualification = response.data[0];
           vinst.loading = false;
 
         })
@@ -153,7 +149,7 @@ export default {
 
 <style>
 #ta-profile-container {
-  padding: 10px 30px;
+  padding: 10px 0px;
   margin: auto;
   margin-top: 60px;
   width: 90%;
@@ -165,14 +161,61 @@ export default {
   direction: rtl;
 }
 
+#ta-qualification {
+  margin: 0px auto 30px auto;
+  width: 100%;
+  text-align: right;
+  display: flex;
+  flex-wrap: wrap;
+}
 
 #ta-qualification .ta-qualification-col{
-    width: 260px;
+    text-align: right;
+    width: 330px;
     height: 100%;
-    margin: 0px auto;
+    min-height: 200px;
+    margin: auto;
+    background: transparent;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+#ta-qualification .ta-qualification-col-second{
+    border-right: 1px solid #ffffff;
+    border-left: 2px dashed #ffffff;
+}
+
+#ta-qualification .ta-qualification-col-second .ta-qualification-col-content{
+  margin-bottom: 15px;
+}
+#ta-qualification .ta-qualification-col-content{
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  display: flex;
+  flex-wrap: wrap;
+  align-self: flex-start;
+}
+
+#ta-qualification .ta-qualification-col-header{
+  width: 220px;
+  height: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 35px;
+  background-color: #4a4a4a;
+  margin: auto;
+  margin-top: -97px;
+  margin-bottom: -97px;
+  display: flex;
+  flex-wrap: wrap;
+  align-self: flex-start;
 }
 
 #ta-qualification .course-title {
+  text-align: center;
   font-size: 16px;
   color: #1d1e1f;
   width: 77%;
@@ -204,21 +247,20 @@ export default {
   margin: 0px auto;
   padding: 0px;
   border-radius: 35px;
-  min-height: 30px;
+  min-height: 25px;
   background: transparent;
   display: flex;
 }
 
 
 #ta-qualification .question-scores-count {
-  font-size: 8px;
+  font-size: 10px;
   color: #d8d8d8;
   width: 5%;
   margin: 0px auto;
   padding: 0px;
-  padding-left: 10px;
   border-radius: 35px;
-  min-height: 30px;
+  min-height: 25px;
   background: transparent;
   display: flex;
 }
@@ -230,9 +272,21 @@ export default {
   margin: 0px auto;
   padding: 0px;
   border-radius: 35px;
-  min-height: 30px;
+  min-height: 25px;
   background-color: #ffffff;
   display: flex;
+}
+
+#ta-qualification .ta-total-score-container {
+  color: #fedc97;
+  display: flex;
+  flex-wrap: wrap;
+  align-self: flex-end;
+}
+
+#ta-qualification .ta-total-score {
+  float: left;
+  font-size: 80px;
 }
 
 #ta-qualification .ta-qualification-col .active{
