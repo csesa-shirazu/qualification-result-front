@@ -4,17 +4,13 @@
         <div v-if="loading" class="ui active inverted dimmer">
                 <div class="ui text loader">Loading</div>
         </div>
-        <div v-else class="ui container contentnav">
-            <div class="right item" dir="rtl">
-                <select class="ui fluid search dropdown rtl">
-                    <option value="" active>جستجوی گریدر</option>
-                    <option v-for="grader in apidata.graders" :value="grader.id">
-                        {{grader.first_name + ' ' + grader.last_name }}
-                    </option>
-                </select>
-
-            </div>
-
+        <div v-else class="right item" dir="rtl" style="padding: 0px;">
+            <select class="ui fluid search dropdown rtl">
+                <option value="" active>جستجوی گریدر</option>
+                <option v-for="grader in apidata.graders" :value="grader.id">
+                    {{grader.first_name + ' ' + grader.last_name }}
+                </option>
+            </select>
         </div>
     </div>
 </template>
@@ -47,6 +43,14 @@
                                 vinst.chooseGrader(Number(val));
                             }
                         });
+                        $('#nav div.ui.dropdown input').focus(function(){
+                            $('#nav div.ui.dropdown').
+                                animate({'opacity': 0.95}, 100);
+                        })
+                        $('#nav div.ui.dropdown input').blur(function(){
+                            $('#nav div.ui.dropdown').
+                                animate({'opacity': 0.5}, 100);
+                        })
                     })
 
                   })
@@ -65,13 +69,18 @@
 
 <style>
 #nav {
-    /* Style for "Rectangle" */
     width: 100%;
     height: 60px;
     border: 1px solid #979797;
     background-color: #1d1e1f;
     text-align: right;
 }
+#nav div.ui.dropdown {
+    border: 1px solid white;
+    border-radius: 10px;
+    opacity: 0.5;
+}
+
 #nav .ui.dropdown{
     min-width: 400px;
 }

@@ -56,15 +56,19 @@
                   </div>
                   <div class="ta-total-score-container">
                     <div class="ta-total-score-text">
-                    امتیاز در درس
+                      <div style="margin: auto">
+                         امتیاز در درس
+                      </div>
                     </div>
                     <div class="ta-total-score">
-                      <template v-if="isNaN(selectedQualification.total)">
-                        -
-                      </template>
-                      <template v-else>
-                        {{ selectedQualification.total }}%
-                      </template>
+                      <div style="margin: auto">
+                        <template v-if="isNaN(selectedQualification.total)">
+                          -
+                        </template>
+                        <template v-else>
+                          {{ selectedQualification.total }}%
+                        </template>
+                      </div>
                     </div>
                   </div>
               </div>
@@ -92,7 +96,6 @@ import axios from 'axios'
 export default {
   computed:{
       appState(){
-        console.log('khar')
           return this.$store.getters.appState;
       },
       graderId(){
@@ -167,18 +170,21 @@ export default {
   text-align: right;
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
 }
 
 #ta-qualification .ta-qualification-col{
     text-align: right;
     width: 330px;
-    height: 100%;
     min-height: 200px;
     margin: auto;
+    margin-top: 0px;
     background: transparent;
     display: flex;
     flex-wrap: wrap;
     padding: 10px;
+    align-self: flex-start;
     align-items: flex-start;
     align-content: flex-start;
 }
@@ -282,11 +288,22 @@ export default {
   display: flex;
   flex-wrap: wrap;
   align-self: flex-end;
+  margin-bottom: -30px;
+}
+#ta-qualification .ta-total-score-text {
+  font-size: 17px;
+  display: flex;
+  flex-wrap: wrap;
+  align-self: flex-end;
+}
+
+#ta-qualification .ta-total-score-container {
+  margin-top: 150px;
 }
 
 #ta-qualification .ta-total-score {
-  float: left;
-  font-size: 80px;
+  padding: 50px 20px 10px 10px;
+  font-size: 85px;
 }
 
 #ta-qualification .ta-qualification-col .active{
