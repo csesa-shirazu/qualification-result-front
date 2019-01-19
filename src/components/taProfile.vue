@@ -79,9 +79,7 @@
                           نظرات
                         </div>
                       </div>
-                      <div
-                      style="text-align: center; line-height: 30px;
-                      font-size: 16px;">
+                      <div class="ta-qualification-col-third-content">
                       نظرات به صورت عمومی قابل نمایش نیستند
                       </div>
               </div>
@@ -200,8 +198,19 @@ export default {
     border-left: 2px dashed #ffffff;
 }
 
+#ta-qualification .ta-qualification-col-third{
+    text-align: center;
+}
+
 #ta-qualification .ta-qualification-col-second .ta-qualification-col-content{
   margin-bottom: 15px;
+}
+
+#ta-qualification .ta-qualification-col-third-content{
+  text-align: center;
+  line-height: 30px;
+  font-size: 16px;
+  margin: auto;
 }
 #ta-qualification .ta-qualification-col-content{
   width: 100%;
@@ -219,11 +228,37 @@ export default {
   border-radius: 35px;
   background-color: #4a4a4a;
   margin: auto;
-  margin-top: -97px;
-  margin-bottom: -97px;
   display: flex;
   flex-wrap: wrap;
   align-self: flex-start;
+}
+
+@media screen and (min-width: 734px){
+  #ta-qualification .ta-qualification-col-second .ta-qualification-col-header {
+    margin-top: -97px;
+    margin-bottom: -97px;
+  }
+}
+
+@media screen and (max-width: 733px){
+  #ta-qualification .ta-qualification-col-second .ta-qualification-col-header {
+    margin-top: 0px;
+    margin-bottom: 10px;
+  }
+}
+
+@media screen and (min-width: 1100px){
+  #ta-qualification .ta-qualification-col-third .ta-qualification-col-header {
+    margin-top: -97px;
+    margin-bottom: -97px;
+  }
+}
+
+@media screen and (max-width: 1099px){
+  #ta-qualification .ta-qualification-col-third .ta-qualification-col-header {
+    margin-top: 50px;
+    margin-bottom: 10px;
+  }
 }
 
 #ta-qualification .course-title {
@@ -294,6 +329,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   align-self: flex-end;
+  margin-top: 50px;
   margin-bottom: -30px;
 }
 #ta-qualification .ta-total-score-text {
@@ -303,16 +339,27 @@ export default {
   align-self: flex-end;
 }
 
-#ta-qualification .ta-total-score-container {
-  margin-top: 150px;
-}
-
 #ta-qualification .ta-total-score {
   padding: 50px 20px 10px 10px;
   font-size: 85px;
 }
 
+#ta-qualification .ta-qualification-col .course-title,
+#ta-qualification .ta-qualification-col .course-total-score{
+  cursor: pointer;
+}
+
+#ta-qualification .ta-qualification-col .course-title:hover,
+#ta-qualification .ta-qualification-col .course-total-score:hover{
+  background-color: #eeeeee;
+}
+
 #ta-qualification .ta-qualification-col .active{
   background-color: #fedc97;
 }
+
+#ta-qualification .ta-qualification-col .active:hover{
+  background-color: #fedc97;
+}
+
 </style>
