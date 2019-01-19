@@ -83,7 +83,7 @@ body {
 		 font-weight: normal;
 }
 
-p, a, label, h1, h2, h3, h4, h5, h6, body{
+p, a, label, h1, h2, h3, h4, h5, h6, body, div, input{
     font-family: "IRANSans";
 }
 p {
