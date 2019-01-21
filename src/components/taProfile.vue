@@ -133,7 +133,8 @@ export default {
             let coeff = 0;
             qualification.scores.forEach(element => {
               sum += Number(element.answer) * Number(element.coeff);
-              coeff += Number(element.coeff);
+              if(element.count > 0)
+                coeff += Number(element.coeff);
             });
             qualification.total = Math.round(sum / coeff);
           })
