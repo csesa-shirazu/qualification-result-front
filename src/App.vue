@@ -1,29 +1,14 @@
 <template>
   <div id="app">
-    <ta-profile :alignFooter='alignFooter'></ta-profile>
+    <router-view></router-view>
     <app-footer></app-footer>
   </div>
 </template>
 
 <script>
-
-
-    const alignFooter = function(){
-        let tp = $(window).height();
-        tp -= $("#ta-profile-container").outerHeight(true);
-        tp -= $("#footer").outerHeight();
-        tp -= $("#nav").innerHeight();
-        tp = Math.max(50,tp);
-        console.log(tp);
-        $("#footer").css('top', tp);
-    }
-    $(document).ready(function(){
-        alignFooter();
-        $(window).resize(alignFooter);
-    })
-
 import taProfile from './components/taProfile.vue'
 import appFooter from './components/Footer.vue'
+import { alignFooterMixin } from "./alignFooterMixin";
 export default {
   name: 'app',
   data () {
@@ -31,16 +16,12 @@ export default {
 
     };
   },
+  mixins: [
+    alignFooterMixin
+  ],
   components: {
-    taProfile,
     appFooter
   },
-  methods: {
-    alignFooter: alignFooter,
-  },
-  update(){
-    alignFooter();
-  }
 }
 </script>
 

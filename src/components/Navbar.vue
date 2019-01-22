@@ -16,6 +16,7 @@
 </template>
 
 <script>
+    import { alignFooterMixin } from "../alignFooterMixin";
     import axios from "axios";
     export default {
         data() {
@@ -25,9 +26,19 @@
                 loading: true,
             };
         },
+        watch: {
+            '$route': 'updateGraderDropdown'
+        },
+        mixins:[
+            alignFooterMixin
+        ],
         methods: {
             chooseGrader: function(val){
-                this.$store.dispatch('setGrader', val)
+                console.log('chooseGrader called');
+                this.$router.push({name: 'ta-profile', params: { profile_id: val }})
+            },
+            updateGraderDropdown(){
+                //TODO: try to set dropdown value to router parameter
             },
             getData: function(){
                 let vinst = this;
@@ -36,13 +47,21 @@
 
                     vinst.loading = false;
                     vinst.apidata = response.data;
-
                     $(document).ready(function(){
-                        $('.ui.dropdown').dropdown({
-                            onChange: function(val) {
-                                vinst.chooseGrader(Number(val));
-                            }
-                        });
+                        if(vinst.$route.params.profile_id){
+                            $('.ui.dropdown').dropdown({
+                                'set selected': vinst.$route.params.profile_id,
+                                onChange: function(val) {
+                                    vinst.chooseGrader(Number(val));
+                                }
+                            });
+                        } else {
+                            $('.ui.dropdown').dropdown({
+                                onChange: function(val) {
+                                    vinst.chooseGrader(Number(val));
+                                }
+                            });
+                        }
                         $('#nav div.ui.dropdown input').focus(function(){
                             $('#nav div.ui.dropdown').
                                 animate({'opacity': 0.95}, 100);
@@ -53,6 +72,7 @@
                                 animate({'opacity': 0.5}, 100);
                         })
                     })
+                    
 
                   })
                   .catch(function (error) {

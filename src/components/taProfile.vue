@@ -1,111 +1,94 @@
 <template>
   <div class="ui contaienr" id="ta-profile-container">
-    <div v-if="appState == 'initial'" style="text-align: center; padding-top:30px">
-        نام گریدر را از منوی بالا انتخاب کنید
+    <div v-if="loading" class="ui active inverted dimmer">
+        <div class="ui text loader">Loading</div>
     </div>
-    <div v-else-if="appState == 'grader-is-set'">
-        <div v-if="loading" class="ui active inverted dimmer">
-            <div class="ui text loader">Loading</div>
-        </div>
-        <div v-else>
-          <div style="text-align: right; padding: 17px 60px 17px 0px;">
-            درس های تدریس کرده
-          </div>
-          <div class="container" id="ta-qualification">
-              
-              <div class="ta-qualification-col ta-qualification-col-first">
-                  <div class="ta-qualification-col-content" :data-content="'از ' + qualification.participant_count + ' رای'" data-position="top right" v-for="qualification in apidata" @click="selectedQualification = qualification">
-                    
-                    <div class="course-title" :class="{'active': selectedQualification==qualification}">
-                      {{ qualification.course }}
-                    </div>
-                    <div class="course-total-score" :class="{'active': selectedQualification==qualification}">
-                      <div style="margin: auto">
-                        <template v-if="isNaN(qualification.total)">
-                          -
-                        </template>
-                        <template v-else>
-                          {{ qualification.total }}%
-                        </template>
-                      </div>
-                    </div>
+    <div v-else>
+      <div style="text-align: right; padding: 17px 60px 17px 0px;">
+        درس های تدریس کرده
+      </div>
+      <div class="container" id="ta-qualification">
+          
+          <div class="ta-qualification-col ta-qualification-col-first">
+              <div class="ta-qualification-col-content" :data-content="'از ' + qualification.participant_count + ' رای'" data-position="top right" v-for="qualification in apidata" @click="selectedQualification = qualification">
+                
+                <div class="course-title" :class="{'active': selectedQualification==qualification}">
+                  {{ qualification.course }}
+                </div>
+                <div class="course-total-score" :class="{'active': selectedQualification==qualification}">
+                  <div style="margin: auto">
+                    <template v-if="isNaN(qualification.total)">
+                      -
+                    </template>
+                    <template v-else>
+                      {{ qualification.total }}%
+                    </template>
                   </div>
+                </div>
               </div>
+          </div>
 
-              <div class="ta-qualification-col ta-qualification-col-second">
+          <div class="ta-qualification-col ta-qualification-col-second">
+              <div class="ta-qualification-col-header">
+                <div style="margin: auto">
+                  امتیازات
+                </div>
+              </div>
+              <div class="ta-qualification-col-content" v-for="qa in selectedQualification.scores">
+                <div class="question-body">
+                  <div style="margin: auto; margin-right: 10px;">
+                    {{ qa.question }}
+                  </div>
+                </div>
+                <div class="question-scores-count">
+                  <div style="margin: auto">
+                    {{ qa.count }}
+                  </div>
+                </div>
+                <div class="question-score">
+                  <div style="margin: auto">
+                    {{ qa.answer }}%
+                  </div>
+                </div>
+              </div>
+              <div class="ta-total-score-container">
+                <div class="ta-total-score-text">
+                  <div style="margin: auto">
+                      امتیاز در درس
+                  </div>
+                </div>
+                <div class="ta-total-score">
+                  <div style="margin: auto">
+                    <template v-if="isNaN(selectedQualification.total)">
+                      -
+                    </template>
+                    <template v-else>
+                      {{ selectedQualification.total }}%
+                    </template>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          <div class="ta-qualification-col ta-qualification-col-third">
                   <div class="ta-qualification-col-header">
                     <div style="margin: auto">
-                      امتیازات
+                      نظرات
                     </div>
                   </div>
-                  <div class="ta-qualification-col-content" v-for="qa in selectedQualification.scores">
-                    <div class="question-body">
-                      <div style="margin: auto; margin-right: 10px;">
-                        {{ qa.question }}
-                      </div>
-                    </div>
-                    <div class="question-scores-count">
-                      <div style="margin: auto">
-                        {{ qa.count }}
-                      </div>
-                    </div>
-                    <div class="question-score">
-                      <div style="margin: auto">
-                        {{ qa.answer }}%
-                      </div>
-                    </div>
+                  <div class="ta-qualification-col-third-content">
+                  نظرات به صورت عمومی قابل نمایش نیستند
                   </div>
-                  <div class="ta-total-score-container">
-                    <div class="ta-total-score-text">
-                      <div style="margin: auto">
-                         امتیاز در درس
-                      </div>
-                    </div>
-                    <div class="ta-total-score">
-                      <div style="margin: auto">
-                        <template v-if="isNaN(selectedQualification.total)">
-                          -
-                        </template>
-                        <template v-else>
-                          {{ selectedQualification.total }}%
-                        </template>
-                      </div>
-                    </div>
-                  </div>
-              </div>
-
-              <div class="ta-qualification-col ta-qualification-col-third">
-                      <div class="ta-qualification-col-header">
-                        <div style="margin: auto">
-                          نظرات
-                        </div>
-                      </div>
-                      <div class="ta-qualification-col-third-content">
-                      نظرات به صورت عمومی قابل نمایش نیستند
-                      </div>
-              </div>
           </div>
-        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { alignFooterMixin } from "../alignFooterMixin";
 export default {
-  computed:{
-      appState(){
-          return this.$store.getters.appState;
-      },
-      graderId(){
-          return this.$store.getters.graderId;
-      }
-  },
-  watch: {
-      graderId (newCount, oldCount) {
-        this.getGraderProfile();
-      }
-  },
   data () {
     return {
       apidata : [
@@ -117,14 +100,17 @@ export default {
       }
     };
   },
-  props:[
-      'alignFooter'
+  watch: {
+    '$route': 'getGraderProfile'
+  },
+  mixins:[
+      alignFooterMixin
   ],
   methods: {
     getGraderProfile: function(){
       let vinst = this;
       vinst.loading = true;
-      axios.get(this.$store.state.hostUrl + '/api/v1/qualification/result/cse-gradery/' + this.graderId)
+      axios.get(this.$store.state.hostUrl + '/api/v1/qualification/result/cse-gradery/' + this.$route.params.profile_id)
         .then(function (response) {
           console.log(response.data)
           vinst.apidata = response.data;
@@ -154,8 +140,8 @@ export default {
         })
     }
   },
-  updated(){
-    this.alignFooter();
+  mounted(){
+    this.getGraderProfile();
   }
 }
 </script>
