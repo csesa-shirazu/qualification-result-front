@@ -7,7 +7,7 @@
         <div v-else class="right item" dir="rtl" style="padding: 0px;">
             <select class="ui search dropdown rtl">
                 <option value="" active>جستجوی گریدر</option>
-                <option v-for="grader in apidata.graders" :value="grader.id">
+                <option v-for="grader in apidata" :value="grader.id">
                     {{grader.first_name + ' ' + grader.last_name }}
                 </option>
             </select>
@@ -42,7 +42,7 @@
             },
             getData: function(){
                 let vinst = this;
-                axios.get(this.$store.state.hostUrl + '/api/v1/courses-data/')
+                axios.get(this.$store.state.hostUrl + '/api/v1/graders-with-qualification/')
                   .then(function (response) {
 
                     vinst.loading = false;
