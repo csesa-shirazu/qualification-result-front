@@ -75,9 +75,10 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     if (localStorage.getItem('token')) {
-      // next({ name: "home" });
+      next({ name: "courses" });
+    } else {
+      next();
     }
-    next();
   }
 };
 </script>

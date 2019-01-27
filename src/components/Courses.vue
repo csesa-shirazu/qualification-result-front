@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="container" id="course-groups">
-          <router-link v-for="course_group in apidata"
+          <router-link v-for="course_group in apidata" :key="course_group.id"
           :to="{name: 'course-group-tas', params: {course_group_id: course_group.id}}"
           tag="div" class="course-group-tas-link">
           {{ course_group.title_fa }}

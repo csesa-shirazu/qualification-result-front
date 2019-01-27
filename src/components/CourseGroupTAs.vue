@@ -1,16 +1,56 @@
 <template>
-  <div class="ui contaienr" id="ta-profile-container">
-    <div v-if="loading" class="ui active inverted dimmer">
+  <div class="ui contaienr" id="course-group-tas-main-container">
+    <template v-if="loading" class="ui active inverted dimmer">
         <div class="ui text loader">Loading</div>
-    </div>
-    <div v-else>
-      <div style="text-align: right; padding: 17px 60px 17px 0px;">
-        another page
+    </template>
+    <template v-else>
+      <div class="course-group-tas-container" id="prev-term-tas-container">
+        <div class="course-group-tas-header">
+          <div style="margin: auto">
+            ترم قبل
+          </div>
+        </div>
+
+        <div v-for="grader in apidata.prev_term_graders" style="
+          width: 230px;
+          height: 160px;
+          border-radius: 45px;
+          border: 1px solid #979797;
+          background-color: #d8d8d8;
+          margin: 10px auto;">
+          <div style="margin: auto;">
+            <svg style="background-color:white; border-radius: 200px; padding: 5px;" width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 -256 1792 2000">
+            <g transform="matrix(1,0,0,-1,197.42373,1300.6102)">
+                <path d="M 1408,131 Q 1408,11 1335,-58.5 1262,-128 1141,-128 H 267 Q 146,-128 73,-58.5 0,11 0,131 0,184 3.5,234.5 7,285 17.5,343.5 28,402 44,452 q 16,50 43,97.5 27,47.5 62,81 35,33.5 85.5,53.5 50.5,20 111.5,20 9,0 42,-21.5 33,-21.5 74.5,-48 41.5,-26.5 108,-48 Q 637,565 704,565 q 67,0 133.5,21.5 66.5,21.5 108,48 41.5,26.5 74.5,48 33,21.5 42,21.5 61,0 111.5,-20 50.5,-20 85.5,-53.5 35,-33.5 62,-81 27,-47.5 43,-97.5 16,-50 26.5,-108.5 10.5,-58.5 14,-109 Q 1408,184 1408,131 z m -320,893 Q 1088,865 975.5,752.5 863,640 704,640 545,640 432.5,752.5 320,865 320,1024 320,1183 432.5,1295.5 545,1408 704,1408 863,1408 975.5,1295.5 1088,1183 1088,1024 z"/>
+            </g>
+            </svg>
+          </div>
+          <div style="color: #000000;">
+            <div style="margin: auto; width: 100%;">
+              {{ grader.grader_profile.first_name }} {{ grader.grader_profile.last_name }}
+            </div>
+          </div>
+          <div style="color: #000000;">
+            <div style="margin: auto;">
+              امتیاز کل {{ grader.score }}
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div class="container" id="course-groups">
-          
+      <div class="course-group-tas-container" id="cur-term-tas-container">
+        <div class="course-group-tas-header">
+          <div style="margin: auto">
+            ترم جاری
+          </div>
+        </div>
+        <div id="gradery-request-btn" class="show-modal" modal="gradery-request-modal">
+          <div style="margin: auto">
+            <svg id="SVGDoc" width="20" height="20" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:avocode="https://avocode.com/" viewBox="0 0 28 28"><defs><path d="M178.47292,173.04302h-10.52402v-10.52408c0,-0.47941 -0.651,-1.51894 -1.95294,-1.51894c-1.30194,0 -1.95294,1.03959 -1.95294,1.51894v10.52413h-10.52408c-0.47935,-0.00005 -1.51894,0.65095 -1.51894,1.95283c0,1.30189 1.03959,1.95295 1.51894,1.95295h10.52413v10.52413c0,0.4793 0.65095,1.51894 1.95295,1.51894c1.302,0 1.95294,-1.03964 1.95294,-1.51894v-10.52413h10.52413c0.4793,0 1.51894,-0.65095 1.51894,-1.95295c0,-1.302 -1.03975,-1.95288 -1.51911,-1.95288z" id="Path-0"/></defs><desc>Generated with Avocode.</desc><g transform="matrix(1,0,0,1,-152,-161)"><g><title>Path</title><use xlink:href="#Path-0" fill="#000000" fill-opacity="1"/></g></g></svg>
+          </div>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -35,19 +75,19 @@ export default {
     getCourseGroupTAs: function(){
       let vinst = this;
       vinst.loading = false;
-      // axios.get(this.$store.state.hostUrl + '/api/v1/course-groups/')
-      //   .then(function (response) {
-      //     console.log(response.data)
-      //     vinst.apidata = response.data;
+      axios.get(this.$store.state.hostUrl + '/api/v1/course-group-tas/' + this.$route.params.course_group_id)
+        .then(function (response) {
+          console.log(response.data)
+          vinst.apidata = response.data;
 
-      //     vinst.loading = false;
+          vinst.loading = false;
 
-      //   })
-      //   .catch(function (error) {
+        })
+        .catch(function (error) {
 
-      //     console.log(error);
+          console.log(error);
 
-      //   })
+        })
     }
   },
   mounted(){
@@ -57,211 +97,71 @@ export default {
 </script>
 
 <style>
-#ta-profile-container {
+#course-group-tas-main-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+}
+.course-group-tas-container {
   padding: 10px 0px;
   margin: auto;
   margin-top: 60px;
-  width: 90%;
   min-height: 100px;
   border-radius: 38px;
-  background-image: linear-gradient(135deg, #49494a 0%, #232324 100%);
+  background-color: #1d1e1f;
   font-size: 20px;
   font-weight: 100;
   direction: rtl;
 }
 
-#course-groups {
-  margin: 0px auto 30px auto;
-  width: 100%;
-  text-align: right;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  align-content: flex-start;
+#prev-term-tas-container {
+  width: 27%;
 }
-
-#course-groups .course-groups-col{
-    text-align: right;
-    width: 330px;
-    min-height: 200px;
-    margin: auto;
-    margin-top: 0px;
-    background: transparent;
-    display: flex;
-    flex-wrap: wrap;
-    padding: 10px;
-    align-self: flex-start;
-    align-items: flex-start;
-    align-content: flex-start;
+#cur-term-tas-container {
+  width: 64%;
 }
-
-#course-groups .course-groups-col-second{
-    border-right: 1px solid #ffffff;
-    border-left: 2px dashed #ffffff;
-}
-
-#course-groups .course-groups-col-third{
-    text-align: center;
-}
-
-#course-groups .course-groups-col-second .course-groups-col-content{
-  margin-bottom: 15px;
-}
-
-#course-groups .course-groups-col-third-content{
-  text-align: center;
-  line-height: 30px;
-  font-size: 16px;
-  margin: auto;
-}
-#course-groups .course-groups-col-content{
-  width: 100%;
-  height: 100%;
-  margin: 5px 0px;
-  display: flex;
-  flex-wrap: wrap;
-  align-self: flex-start;
-}
-
-#course-groups .course-groups-col-header{
-  width: 220px;
-  height: 50px;
+.course-group-tas-header {
+  width: 160px;
+  height: 40px;
+  font-size: 17px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   border-radius: 35px;
   background-color: #4a4a4a;
-  margin: auto;
   display: flex;
   flex-wrap: wrap;
   align-self: flex-start;
 }
 
-@media screen and (min-width: 734px){
-  #course-groups .course-groups-col-second .course-groups-col-header {
-    margin-top: -97px;
-    margin-bottom: -97px;
-  }
+#prev-term-tas-container .course-group-tas-header {
+  margin: -35px auto 0px auto;
 }
 
-@media screen and (max-width: 733px){
-  #course-groups .course-groups-col-second .course-groups-col-header {
-    margin-top: 0px;
-    margin-bottom: 10px;
-  }
+#cur-term-tas-container .course-group-tas-header {
+  margin: -35px 30px 0px 0px;
 }
 
-@media screen and (min-width: 1100px){
-  #course-groups .course-groups-col-third .course-groups-col-header {
-    margin-top: -97px;
-    margin-bottom: -97px;
-  }
-}
-
-@media screen and (max-width: 1099px){
-  #course-groups .course-groups-col-third .course-groups-col-header {
-    margin-top: 50px;
-    margin-bottom: 10px;
-  }
-}
-
-#course-groups .course-title {
-  text-align: center;
-  font-size: 16px;
-  color: #1d1e1f;
-  width: 77%;
-  margin: 0px auto;
-  padding: 10px 5px;
+#gradery-request-btn {
+  float: left;
+  width: 140px;
+  height: 33px;
+  font-size: 17px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   border-radius: 35px;
-  min-height: 40px;
-  background-color: #9b9b9b;
-}
-
-
-#course-groups .course-total-score {
-  font-size: 16px;
-  color: #1d1e1f;
-  width: 20%;
-  margin: 0px auto;
-  padding: 8px 5px;
-  padding-top: 12px;
-  border-radius: 35px;
-  min-height: 40px;
-  background-color: #9b9b9b;
-  display: flex;
-}
-
-#course-groups .question-body {
-  font-size: 16px;
-  color: white;
-  width: 70%;
-  margin: 0px auto;
-  padding: 0px;
-  border-radius: 35px;
-  min-height: 25px;
-  background: transparent;
-  display: flex;
-}
-
-
-#course-groups .question-scores-count {
-  font-size: 10px;
-  color: #d8d8d8;
-  width: 5%;
-  margin: 0px auto;
-  padding: 0px;
-  border-radius: 35px;
-  min-height: 25px;
-  background: transparent;
-  display: flex;
-}
-
-#course-groups .question-score {
-  font-size: 16px;
-  color: #000000;
-  width: 20%;
-  margin: 0px auto;
-  padding: 0px;
-  border-radius: 35px;
-  min-height: 25px;
   background-color: #ffffff;
   display: flex;
-}
-
-#course-groups .ta-total-score-container {
-  color: #fedc97;
-  display: flex;
   flex-wrap: wrap;
-  align-self: flex-end;
-  margin-top: 50px;
-  margin-bottom: -30px;
-}
-#course-groups .ta-total-score-text {
-  font-size: 17px;
-  display: flex;
-  flex-wrap: wrap;
-  align-self: flex-end;
-}
-
-#course-groups .ta-total-score {
-  padding: 50px 20px 10px 10px;
-  font-size: 85px;
-}
-
-#course-groups .course-groups-col .course-title,
-#course-groups .course-groups-col .course-total-score{
+  align-self: flex-start;
+  margin: -35px 30px 0px 30px;
+  padding-top: 5px;
   cursor: pointer;
 }
 
-#course-groups .course-groups-col .course-title:hover,
-#course-groups .course-groups-col .course-total-score:hover{
-  background-color: #eeeeee;
+@media screen and (min-width: 734px){
+
 }
 
-#course-groups .course-groups-col .active{
-  background-color: #fedc97;
-}
-
-#course-groups .course-groups-col .active:hover{
-  background-color: #fedc97;
+@media screen and (max-width: 733px){
+  
 }
 
 </style>
