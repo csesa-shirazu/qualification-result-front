@@ -1,8 +1,7 @@
 const alignFooter = function(){
     let tp = $(window).height();
-    tp -= $("#ta-profile-container").outerHeight(true);
-    tp -= $("#footer").outerHeight();
-    tp -= $("#nav").innerHeight();
+    tp -= $("#app").height();
+    tp -= $("#nav").outerHeight(true);
     tp = Math.max(50,tp);
     $("#footer").css('top', tp);
 }

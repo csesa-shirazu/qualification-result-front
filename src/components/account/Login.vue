@@ -1,26 +1,24 @@
 <template>
   <div class="ui middle aligned center aligned grid" style="margin-top: 3em;">
-    <div class="column">
-      <h2 class="ui teal header">
-        <div class="content">
-          Login to your account
-        </div>
-      </h2>
+    <template v-if="loading" class="ui active inverted dimmer">
+        <div class="ui text loader">Loading</div>
+    </template>
+    <div v-else class="column">
       <form class="ui large form">
         <div class="ui stacked segment">
           <div class="field">
             <div class="ui left icon input">
               <i class="user icon"></i>
-              <input type="text" name="username" v-model="user.username" placeholder="Email">
+              <input type="text" name="username" v-model="user.username" placeholder="نام کاربری">
             </div>
           </div>
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input type="password" name="password" v-model="user.password" placeholder="Password">
+              <input type="password" @keyup.enter="submit()" name="password" v-model="user.password" placeholder="کلمه عبور">
             </div>
           </div>
-          <div class="ui fluid large teal submit button" @click="submit()">Login</div>
+          <div class="ui large black submit button" style="background-color: #545454" @click="submit()">ورود</div>
         </div>
         <div class="ui error message"></div>
       </form>
@@ -31,6 +29,7 @@
 
 <script>
 import axios from "axios";
+import { alignFooterMixin } from "../../alignFooterMixin";
 export default {
   data() {
     return {
@@ -41,6 +40,9 @@ export default {
       loading: false
     };
   },
+  mixins:[
+      alignFooterMixin
+  ],
   methods: {
     submit() {
       this.loading = true;
@@ -51,15 +53,15 @@ export default {
           password: this.user.password
         })
         .then(response => {
-          alert("با موفقیت وارد شدید");
           console.log(response.data)
           this.$store.commit("updateToken", response.data.token);
+          vinst.loading = false;
+          alert("با موفقیت وارد شدید");
           if (this.$route.query.next) {
             this.$router.push(this.$route.query.next);
           } else {
-            // this.$router.push({ name: "home" });
+            this.$router.push({ name: "courses" });
           }
-          vinst.loading = false;
         })
         .catch(error => {
           if (error.response) {

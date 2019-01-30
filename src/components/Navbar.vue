@@ -4,14 +4,22 @@
         <div v-if="loading" class="ui active inverted dimmer">
                 <div class="ui text loader">Loading</div>
         </div>
-        <div v-else class="right item" dir="rtl" style="padding: 0px;">
-            <select class="ui search dropdown rtl">
-                <option value="" active>جستجوی گریدر</option>
-                <option v-for="grader in apidata" :value="grader.id">
-                    {{grader.first_name + ' ' + grader.last_name }}
-                </option>
-            </select>
-        </div>
+        <template v-esle>
+            <router-link :to="{name: 'logout'}" v-if="isAuthenticated" class="item" style="background-color: #555555; border-radius: 5px; cursor; pointer">
+                خروج
+            </router-link>
+            <router-link :to="{name: 'login'}" v-else class="item" style="background-color: #555555; border-radius: 5px; cursor; pointer">
+                ورود
+            </router-link>
+            <div class="right item" dir="rtl" style="padding: 0px;">
+                <select class="ui search dropdown rtl">
+                    <option value="" active>جستجوی گریدر</option>
+                    <option v-for="grader in apidata" :value="grader.id">
+                        {{grader.first_name + ' ' + grader.last_name }}
+                    </option>
+                </select>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -19,6 +27,11 @@
     import { alignFooterMixin } from "../alignFooterMixin";
     import axios from "axios";
     export default {
+        computed:{
+            isAuthenticated(){
+                return this.$store.getters.isAuthenticated;
+            }
+        },
         data() {
             return {
                 apidata : [

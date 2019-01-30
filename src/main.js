@@ -24,6 +24,9 @@ export const store = new Vuex.Store({
   getters: {
     api_token: state => {
       return state.api_token;
+    },
+    isAuthenticated: state => {
+      return state.api_token !== null;
     }
   },
   mutations: {

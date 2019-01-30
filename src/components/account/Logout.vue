@@ -11,7 +11,7 @@
         },
         created(){
             this.$store.commit('removeToken')
-            // this.$router.push({ name: 'home'})
+            this.$router.push({ name: 'courses'})
         }
     }
 </script>

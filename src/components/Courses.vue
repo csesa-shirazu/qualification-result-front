@@ -104,10 +104,21 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   border-radius: 35px;
   background-color: #4a4a4a;
-  margin-right: 70px;
-  margin-top: -35px;
   display: flex;
   flex-wrap: wrap;
   align-self: flex-start;
+}
+
+
+@media screen and (min-width: 734px){
+  #course-groups-header{
+    margin: -35px 70px 0px 0px;
+  }
+}
+
+@media screen and (max-width: 733px){
+  #course-groups-header{
+    margin: -35px auto 0px auto;
+  }
 }
 </style>
