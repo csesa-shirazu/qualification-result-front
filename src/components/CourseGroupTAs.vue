@@ -76,7 +76,7 @@
             <svg id="SVGDoc" width="20" height="20" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:avocode="https://avocode.com/" viewBox="0 0 28 28"><defs><path d="M178.47292,173.04302h-10.52402v-10.52408c0,-0.47941 -0.651,-1.51894 -1.95294,-1.51894c-1.30194,0 -1.95294,1.03959 -1.95294,1.51894v10.52413h-10.52408c-0.47935,-0.00005 -1.51894,0.65095 -1.51894,1.95283c0,1.30189 1.03959,1.95295 1.51894,1.95295h10.52413v10.52413c0,0.4793 0.65095,1.51894 1.95295,1.51894c1.302,0 1.95294,-1.03964 1.95294,-1.51894v-10.52413h10.52413c0.4793,0 1.51894,-0.65095 1.51894,-1.95295c0,-1.302 -1.03975,-1.95288 -1.51911,-1.95288z" id="Path-0"/></defs><desc>Generated with Avocode.</desc><g transform="matrix(1,0,0,1,-152,-161)"><g><title>Path</title><use xlink:href="#Path-0" fill="#000000" fill-opacity="1"/></g></g></svg>
           </div>
         </div>
-
+      <div  style="display: flex; flex-wrap:wrap; padding: 0px 40px;">
         <router-link v-for="grader in apidata.cur_term_graders"
         :to="{name: 'ta-profile', params: {profile_id: grader.grader_profile.id}}"
           tag="div"
@@ -104,7 +104,7 @@
             </div>
           </div>
         </router-link>
-
+      </div>
       </div>
     </template>
   </div>
@@ -163,16 +163,16 @@ export default {
       })
         .then(function (response) {
           console.log(response.data)
+          $("#gradery-request-modal").modal('hide');
           vinst.getCourseGroupTAs();
           alert('درخواست با موفقیت ثبت شد');
-          $("#gradery-request-modal").modal('hide');
         })
         .catch(function (error) {
 
           console.log(error);
+          $("#gradery-request-modal").modal('hide');
           vinst.getCourseGroupTAs();
           alert('خطا در ثبت درخواست');
-          $("#gradery-request-modal").modal('hide');
 
         })
     }
