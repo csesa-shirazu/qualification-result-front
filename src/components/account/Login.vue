@@ -1,8 +1,8 @@
 <template>
   <div class="ui middle aligned center aligned grid" style="margin-top: 3em;">
-    <template v-if="loading" class="ui active inverted dimmer">
+    <div v-if="loading" class="ui active inverted dimmer">
         <div class="ui text loader">Loading</div>
-    </template>
+    </div>
     <div v-else class="column">
       <form class="ui large form">
         <div class="ui stacked segment">

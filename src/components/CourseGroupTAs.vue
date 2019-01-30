@@ -2,9 +2,9 @@
   <div class="ui contaienr" id="course-group-tas-main-container">
 
     <div class="ui modal" id="gradery-request-modal" style="max-width: 300px;">
-      <template v-if="loading" class="ui active inverted dimmer">
+      <div v-if="loading" class="ui active inverted dimmer">
           <div class="ui text loader">Loading</div>
-      </template>
+      </div>
       <div v-else class="content" style="width: 100%;">
 
         <template v-if="isAuthenticated">
@@ -30,9 +30,9 @@
       </div>
     </div>
 
-    <template v-if="loading" class="ui active inverted dimmer">
+    <div v-if="loading" class="ui active inverted dimmer">
         <div class="ui text loader">Loading</div>
-    </template>
+    </div>
     <template v-else>
       <div style="width: 100%; text-align: right; color: #000000; font-size: 20px; margin: 10px; margin-right: 60px;">
         {{ apidata.course_group.title_fa }}
@@ -166,9 +166,8 @@ export default {
       })
         .then(function (response) {
           console.log(response.data)
-          vinst.apidata = response.data;
+          vinst.getCourseGroupTAs();
           alert('درخواست با موفقیت ثبت شد');
-          vinst.loading = false;
           $("#gradery-request-modal").modal('hide');
         })
         .catch(function (error) {
