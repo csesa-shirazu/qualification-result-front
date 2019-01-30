@@ -2,10 +2,7 @@
   <div class="ui contaienr" id="course-group-tas-main-container">
 
     <div class="ui modal" id="gradery-request-modal" style="max-width: 300px;">
-      <div v-if="loading" class="ui active inverted dimmer">
-          <div class="ui text loader">Loading</div>
-      </div>
-      <div v-else class="content" style="width: 100%;">
+      <div v-if="!loading" class="content" style="width: 100%;">
 
         <template v-if="isAuthenticated">
           <form class="ui form" style="text-align: right;" action="{% url 'campaigns:create' %}" method="post">
@@ -173,6 +170,9 @@ export default {
         .catch(function (error) {
 
           console.log(error);
+          vinst.getCourseGroupTAs();
+          alert('خطا در ثبت درخواست');
+          $("#gradery-request-modal").modal('hide');
 
         })
     }

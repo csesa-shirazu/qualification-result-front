@@ -4,83 +4,90 @@
         <div class="ui text loader">Loading</div>
     </div>
     <div v-else>
-      <div style="text-align: right; padding: 17px 60px 17px 0px;">
-        درس های تدریس کرده
-      </div>
-      <div class="container" id="ta-qualification">
-          
-          <div class="ta-qualification-col ta-qualification-col-first">
-              <div class="ta-qualification-col-content" :data-content="'از ' + qualification.participant_count + ' رای'" data-position="top right" v-for="qualification in apidata" @click="selectedQualification = qualification">
-                
-                <div class="course-title" :class="{'active': selectedQualification==qualification}">
-                  {{ qualification.course }}
-                </div>
-                <div class="course-total-score" :class="{'active': selectedQualification==qualification}">
-                  <div style="margin: auto">
-                    <template v-if="isNaN(qualification.total)">
-                      -
-                    </template>
-                    <template v-else>
-                      {{ qualification.total }}%
-                    </template>
+      <template v-if="apidata.length == 0">
+        <div style="text-align: center; padding: 30px 60px 17px 0px;">
+          دیتایی برای این گریدر موجود نیست
+        </div>
+      </template>
+      <template v-else>
+        <div style="text-align: right; padding: 17px 60px 17px 0px;">
+          درس های تدریس کرده
+        </div>
+        <div class="container" id="ta-qualification">
+            
+            <div class="ta-qualification-col ta-qualification-col-first">
+                <div class="ta-qualification-col-content" :data-content="'از ' + qualification.participant_count + ' رای'" data-position="top right" v-for="qualification in apidata" @click="selectedQualification = qualification">
+                  
+                  <div class="course-title" :class="{'active': selectedQualification==qualification}">
+                    {{ qualification.course }}
                   </div>
-                </div>
-              </div>
-          </div>
-
-          <div class="ta-qualification-col ta-qualification-col-second">
-              <div class="ta-qualification-col-header">
-                <div style="margin: auto">
-                  امتیازات
-                </div>
-              </div>
-              <div class="ta-qualification-col-content" v-for="qa in selectedQualification.scores">
-                <div class="question-body">
-                  <div style="margin: auto; margin-right: 10px;">
-                    {{ qa.question }}
-                  </div>
-                </div>
-                <div class="question-scores-count">
-                  <div style="margin: auto">
-                    {{ qa.count }}
-                  </div>
-                </div>
-                <div class="question-score">
-                  <div style="margin: auto">
-                    {{ qa.answer }}%
-                  </div>
-                </div>
-              </div>
-              <div class="ta-total-score-container">
-                <div class="ta-total-score-text">
-                  <div style="margin: auto">
-                      امتیاز در درس
-                  </div>
-                </div>
-                <div class="ta-total-score">
-                  <div style="margin: auto">
-                    <template v-if="isNaN(selectedQualification.total)">
-                      -
-                    </template>
-                    <template v-else>
-                      {{ selectedQualification.total }}%
-                    </template>
-                  </div>
-                </div>
-              </div>
-          </div>
-
-          <div class="ta-qualification-col ta-qualification-col-third">
-                  <div class="ta-qualification-col-header">
+                  <div class="course-total-score" :class="{'active': selectedQualification==qualification}">
                     <div style="margin: auto">
-                      نظرات
+                      <template v-if="isNaN(qualification.total)">
+                        -
+                      </template>
+                      <template v-else>
+                        {{ qualification.total }}%
+                      </template>
                     </div>
                   </div>
-                  <div class="ta-qualification-col-third-content">
-                  نظرات به صورت عمومی قابل نمایش نیستند
+                </div>
+            </div>
+
+            <div class="ta-qualification-col ta-qualification-col-second">
+                <div class="ta-qualification-col-header">
+                  <div style="margin: auto">
+                    امتیازات
                   </div>
-          </div>
-      </div>
+                </div>
+                <div class="ta-qualification-col-content" v-for="qa in selectedQualification.scores">
+                  <div class="question-body">
+                    <div style="margin: auto; margin-right: 10px;">
+                      {{ qa.question }}
+                    </div>
+                  </div>
+                  <div class="question-scores-count">
+                    <div style="margin: auto">
+                      {{ qa.count }}
+                    </div>
+                  </div>
+                  <div class="question-score">
+                    <div style="margin: auto">
+                      {{ qa.answer }}%
+                    </div>
+                  </div>
+                </div>
+                <div class="ta-total-score-container">
+                  <div class="ta-total-score-text">
+                    <div style="margin: auto">
+                        امتیاز در درس
+                    </div>
+                  </div>
+                  <div class="ta-total-score">
+                    <div style="margin: auto">
+                      <template v-if="isNaN(selectedQualification.total)">
+                        -
+                      </template>
+                      <template v-else>
+                        {{ selectedQualification.total }}%
+                      </template>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="ta-qualification-col ta-qualification-col-third">
+                    <div class="ta-qualification-col-header">
+                      <div style="margin: auto">
+                        نظرات
+                      </div>
+                    </div>
+                    <div class="ta-qualification-col-third-content">
+                    نظرات به صورت عمومی قابل نمایش نیستند
+                    </div>
+            </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -124,8 +131,8 @@ export default {
             });
             qualification.total = Math.round(sum / coeff);
           })
-
-          vinst.selectedQualification = response.data[0];
+          if(vinst.apidata.length > 0)
+            vinst.selectedQualification = response.data[0];
 
           $(document).ready(function(){
               $('.ta-qualification-col-content').popup();
