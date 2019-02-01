@@ -5,15 +5,17 @@
       <div v-if="!loading" class="content" style="width: 100%;">
 
         <template v-if="isAuthenticated">
-          <form class="ui form" style="text-align: right;" action="{% url 'campaigns:create' %}" method="post">
+          <form class="ui form" style="text-align: right;  direction: rtl" action="{% url 'campaigns:create' %}" method="post">
               <div class="field">
-                  <p style="color: #000000; text-align: center; font-size:17px;">
-                      یادداشت برای استاد
+                  <p style="color: #000000; text-align: right; font-size:15px;">
+                      اطلاعات مورد نیاز:<br/>
+                      رشته - گرایش - سال ورود - نمرات مرتبط - سوابق گریدری (به جز ترم قبل) - توضیحات دلخواه
                   </p>
-                  <textarea id="charge-amount" style="border-radius: 10px; text-align: right; direction: rtl;"></textarea>
+                  <textarea v-model="graderyRequest.enrollment_request_note" id="charge-amount" style="border-radius: 10px; text-align: right; direction: rtl;"></textarea>
               </div>
               <div style="text-align: center;">
-                  <a id="submit-charge-amount" class="ui black button" style="cursor: pointer" @click="submitGraderyRequest()">تایید</a>
+                  <a class="ui button" style="cursor: pointer;" @click="closeGraderyRequestModal()">بستن</a>
+                  <a class="ui black button" style="cursor: pointer" @click="submitGraderyRequest()">تایید</a>
               </div>
           </form>
         </template>
@@ -71,7 +73,7 @@
             ترم جاری
           </div>
         </div>
-        <div id="gradery-request-btn" class="show-modal" modal="gradery-request-modal">
+        <div id="gradery-request-btn" class="show-modal" @click="showGraderyRequestModal()">
           <div style="margin: auto">
             <svg id="SVGDoc" width="20" height="20" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:avocode="https://avocode.com/" viewBox="0 0 28 28"><defs><path d="M178.47292,173.04302h-10.52402v-10.52408c0,-0.47941 -0.651,-1.51894 -1.95294,-1.51894c-1.30194,0 -1.95294,1.03959 -1.95294,1.51894v10.52413h-10.52408c-0.47935,-0.00005 -1.51894,0.65095 -1.51894,1.95283c0,1.30189 1.03959,1.95295 1.51894,1.95295h10.52413v10.52413c0,0.4793 0.65095,1.51894 1.95295,1.51894c1.302,0 1.95294,-1.03964 1.95294,-1.51894v-10.52413h10.52413c0.4793,0 1.51894,-0.65095 1.51894,-1.95295c0,-1.302 -1.03975,-1.95288 -1.51911,-1.95288z" id="Path-0"/></defs><desc>Generated with Avocode.</desc><g transform="matrix(1,0,0,1,-152,-161)"><g><title>Path</title><use xlink:href="#Path-0" fill="#000000" fill-opacity="1"/></g></g></svg>
           </div>
@@ -103,6 +105,28 @@
               تایید نشده
             </div>
           </div>
+          <div style="width: 100%; display: flex; margin-top: 7px;" v-if="grader.accessable">
+            <div style="width: 47%;
+                        margin: auto;
+                        padding: 2px;
+                        height: 30px;
+                        text-align: center;
+                        border-radius: 45px;
+                        color: black;
+                        border: 1px solid #aaaaaa;
+                        background-color: #fedc97;" @click.prevent="showGraderyRequestEditModal(grader)">
+              ویرایش
+            </div>
+            <div style="width: 47%;
+                        margin: auto;
+                        padding: 2px;
+                        height: 30px;
+                        text-align: center;
+                        border-radius: 45px;
+                        background-color: #6a061e;" @click.prevent="cancelGraderyRequest(grader)">
+              لغو
+            </div>
+          </div>
         </router-link>
       </div>
       </div>
@@ -119,6 +143,9 @@ export default {
       apidata : {
 
       },
+      graderyRequest : {
+        enrollment_request_note: ''
+      },
       loading: true,
     };
   },
@@ -134,10 +161,51 @@ export default {
       alignFooterMixin
   ],
   methods: {
+    showGraderyRequestModal(){
+      $("#gradery-request-modal").modal('show');
+    },
+    closeGraderyRequestModal(){
+      $("#gradery-request-modal").modal('hide');
+    },
+    cancelGraderyRequest(graderyRequest){
+      let vinst = this;
+      vinst.loading = true;
+      axios.delete(this.$store.state.hostUrl + '/api/v1/cancel-gradery-request/' + graderyRequest.id + '/',
+      {
+        headers: {
+          'Authorization' : 'Token ' + vinst.$store.getters.api_token
+        }
+      })
+        .then(function (response) {
+          console.log(response.data)
+          vinst.getCourseGroupTAs();
+          alert('درخواست با موفقیت لغو شد');
+        })
+        .catch(function (error) {
+
+          console.log(error);
+          vinst.getCourseGroupTAs();
+          alert('خطا در لغو درخواست');
+
+        })
+    },
+    showGraderyRequestEditModal(graderyRequest){
+      this.graderyRequest.enrollment_request_note = graderyRequest.enrollment_request_note;
+      $("#gradery-request-modal").modal('show');
+    },
     getCourseGroupTAs: function(){
       let vinst = this;
       vinst.loading = true;
-      axios.get(this.$store.state.hostUrl + '/api/v1/course-group-tas/' + this.$route.params.course_group_id)
+      let headers = {};
+      if(this.isAuthenticated){
+        headers = {
+          'Authorization' : 'Token ' + vinst.$store.getters.api_token
+        }
+      }
+      axios.get(this.$store.state.hostUrl + '/api/v1/course-group-tas/' + this.$route.params.course_group_id,
+      {
+        headers: headers
+      })
         .then(function (response) {
           console.log(response.data)
           vinst.apidata = response.data;
@@ -153,9 +221,7 @@ export default {
       let vinst = this;
       vinst.loading = true;
       axios.post(this.$store.state.hostUrl + '/api/v1/gradery-request/' + this.$route.params.course_group_id + '/',
-      {
-        enrollment_request_note: 'waefawef'
-      },
+      this.graderyRequest,
       {
         headers: {
           'Authorization' : 'Token ' + vinst.$store.getters.api_token
@@ -180,13 +246,6 @@ export default {
   mounted(){
     this.getCourseGroupTAs();
   },
-  updated(){
-    $(document).ready(function(){
-      $('.show-modal').click(function(){
-          $("#" + $(this).attr('modal') ).modal('show');
-      });
-    })
-  }
 }
 </script>
 
@@ -196,7 +255,8 @@ export default {
   width: 70%;
   min-width: 150px;
   max-width: 210px;
-  height: 170px;
+  height: 100%;
+  min-height: 170px;
   border-radius: 45px;
   border: 1px solid #979797;
   background-color: #d8d8d8;
