@@ -5,7 +5,15 @@
       <div v-if="!loading" class="content" style="width: 100%;">
 
         <template v-if="isAuthenticated">
-          <form class="ui form" style="text-align: right;  direction: rtl" action="{% url 'campaigns:create' %}" method="post">
+          <div v-if="apidata.is_teacher">
+              <div style="text-align: right; color: black; padding: 10px; ">
+                {{ graderyRequest.enrollment_request_note }}
+              </div>
+              <div style="text-align: center;">
+                  <a class="ui black button" style="cursor: pointer; margin-top: 10px;" @click="closeGraderyRequestModal()">بستن</a>
+              </div>
+          </div>
+          <form v-else class="ui form" style="text-align: right;  direction: rtl" action="{% url 'campaigns:create' %}" method="post">
               <div class="field">
                   <p style="color: #000000; text-align: right; font-size:15px;">
                       اطلاعات مورد نیاز:<br/>
@@ -105,6 +113,16 @@
               تایید نشده
             </div>
           </div>
+          <div style="width: 100%; display: flex;" v-else-if="grader.status == 'approved'">
+            <div style="margin: auto; color: green;">
+              تایید شده
+            </div>
+          </div>
+          <div style="width: 100%; display: flex;" v-else-if="grader.status == 'rejected'">
+            <div style="margin: auto; color: red;">
+              رد شده
+            </div>
+          </div>
           <div style="width: 100%; display: flex; margin-top: 7px;" v-if="grader.accessable">
             <div style="width: 47%;
                         margin: auto;
@@ -125,6 +143,42 @@
                         border-radius: 45px;
                         background-color: #6a061e;" @click.prevent="cancelGraderyRequest(grader)">
               لغو
+            </div>
+          </div>
+          <div style="width: 100%; display: flex; margin-top: 7px; padding: 0px 15px;" v-if="apidata.is_teacher">
+            <div style="width: 47%;
+                        margin: auto;
+                        padding: 2px;
+                        height: 30px;
+                        text-align: center;
+                        border-radius: 45px;
+                        color: black;
+                        border: 1px solid #aaaaaa;
+                        background-color: #fedc97;" @click.prevent="approveGraderyRequest(grader)">
+              تایید
+            </div>
+            <div style="width: 45%;
+                        margin: auto;
+                        padding: 2px;
+                        height: 30px;
+                        text-align: center;
+                        border-radius: 45px;
+                        background-color: #6a061e;" @click.prevent="rejectGraderyRequest(grader)">
+              رد
+            </div>
+          </div>
+          <div style="width: 100%; display: flex; margin-top: 7px; padding: 0px 15px;" v-if="apidata.is_teacher">
+            <div style="width: 100%;
+                        margin: auto;
+                        padding: 2px;
+                        height: 30px;
+                        font-size: 15px;
+                        text-align: center;
+                        border-radius: 45px;
+                        color: white;
+                        border: 1px solid #aaaaaa;
+                        background-color: #1d1e1f;" @click.prevent="showGraderyRequestNote(grader)">
+              یادداشت گریدر
             </div>
           </div>
         </router-link>
@@ -167,6 +221,50 @@ export default {
     closeGraderyRequestModal(){
       $("#gradery-request-modal").modal('hide');
     },
+    approveGraderyRequest(graderyRequest){
+      let vinst = this;
+      vinst.loading = true;
+      axios.get(this.$store.state.hostUrl + '/api/v1/approve-gradery-request/' + graderyRequest.id + '/',
+      {
+        headers: {
+          'Authorization' : 'Token ' + vinst.$store.getters.api_token
+        }
+      })
+        .then(function (response) {
+          console.log(response.data)
+          vinst.getCourseGroupTAs();
+          alert('درخواست با موفقیت قبول شد');
+        })
+        .catch(function (error) {
+
+          console.log(error);
+          vinst.getCourseGroupTAs();
+          alert('خطا در قبول درخواست');
+
+        })
+    },
+    rejectGraderyRequest(graderyRequest){
+      let vinst = this;
+      vinst.loading = true;
+      axios.get(this.$store.state.hostUrl + '/api/v1/reject-gradery-request/' + graderyRequest.id + '/',
+      {
+        headers: {
+          'Authorization' : 'Token ' + vinst.$store.getters.api_token
+        }
+      })
+        .then(function (response) {
+          console.log(response.data)
+          vinst.getCourseGroupTAs();
+          alert('درخواست با موفقیت رد شد');
+        })
+        .catch(function (error) {
+
+          console.log(error);
+          vinst.getCourseGroupTAs();
+          alert('خطا در رد کردن درخواست');
+
+        })
+    },
     cancelGraderyRequest(graderyRequest){
       let vinst = this;
       vinst.loading = true;
@@ -193,6 +291,10 @@ export default {
       this.graderyRequest.enrollment_request_note = graderyRequest.enrollment_request_note;
       $("#gradery-request-modal").modal('show');
     },
+    showGraderyRequestNote(graderyRequest){
+      this.graderyRequest.enrollment_request_note = graderyRequest.enrollment_request_note;
+      $("#gradery-request-modal").modal('show');
+    },
     getCourseGroupTAs: function(){
       let vinst = this;
       vinst.loading = true;
@@ -210,6 +312,7 @@ export default {
           console.log(response.data)
           vinst.apidata = response.data;
           vinst.loading = false;
+          $("#gradery-request-modal").modal('hide');
         })
         .catch(function (error) {
 
