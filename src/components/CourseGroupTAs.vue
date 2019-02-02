@@ -1,7 +1,7 @@
 <template>
   <div class="ui contaienr" id="course-group-tas-main-container">
 
-    <div class="ui modal" id="gradery-request-modal" style="max-width: 300px;">
+    <div class="ui modal" :id="'gradery-request-modal-' + $route.params.course_group_id" style="max-width: 300px;">
       <div v-if="!loading" class="content" style="width: 100%;">
 
         <template v-if="isAuthenticated">
@@ -216,10 +216,14 @@ export default {
   ],
   methods: {
     showGraderyRequestModal(){
-      $("#gradery-request-modal").modal('show');
+      this.graderyRequest.enrollment_request_note = "";
+      let vinst = this;
+      $("#gradery-request-modal-" + vinst.$route.params.course_group_id).modal('show');
     },
     closeGraderyRequestModal(){
-      $("#gradery-request-modal").modal('hide');
+      this.graderyRequest.enrollment_request_note = "";
+      let vinst = this;
+      $("#gradery-request-modal-" + vinst.$route.params.course_group_id).modal('hide');
     },
     approveGraderyRequest(graderyRequest){
       let vinst = this;
@@ -289,11 +293,12 @@ export default {
     },
     showGraderyRequestEditModal(graderyRequest){
       this.graderyRequest.enrollment_request_note = graderyRequest.enrollment_request_note;
-      $("#gradery-request-modal").modal('show');
+      let vinst = this;
+      $("#gradery-request-modal-" + vinst.$route.params.course_group_id).modal('show');
     },
     showGraderyRequestNote(graderyRequest){
       this.graderyRequest.enrollment_request_note = graderyRequest.enrollment_request_note;
-      $("#gradery-request-modal").modal('show');
+      $("#gradery-request-modal-" + vinst.$route.params.course_group_id).modal('show');
     },
     getCourseGroupTAs: function(){
       let vinst = this;
@@ -304,7 +309,7 @@ export default {
           'Authorization' : 'Token ' + vinst.$store.getters.api_token
         }
       }
-      axios.get(this.$store.state.hostUrl + '/api/v1/course-group-tas/' + this.$route.params.course_group_id,
+      axios.get(this.$store.state.hostUrl + '/api/v1/course-group-tas/' + vinst.$route.params.course_group_id,
       {
         headers: headers
       })
@@ -312,7 +317,7 @@ export default {
           console.log(response.data)
           vinst.apidata = response.data;
           vinst.loading = false;
-          $("#gradery-request-modal").modal('hide');
+          $("#gradery-request-modal-" + vinst.$route.params.course_group_id).modal('hide');
         })
         .catch(function (error) {
 
@@ -323,7 +328,7 @@ export default {
     submitGraderyRequest: function(){
       let vinst = this;
       vinst.loading = true;
-      axios.post(this.$store.state.hostUrl + '/api/v1/gradery-request/' + this.$route.params.course_group_id + '/',
+      axios.post(this.$store.state.hostUrl + '/api/v1/gradery-request/' + vinst.$route.params.course_group_id + '/',
       this.graderyRequest,
       {
         headers: {
@@ -332,14 +337,14 @@ export default {
       })
         .then(function (response) {
           console.log(response.data)
-          $("#gradery-request-modal").modal('hide');
+          $("#gradery-request-modal-" + vinst.$route.params.course_group_id).modal('hide');
           vinst.getCourseGroupTAs();
           alert('درخواست با موفقیت ثبت شد');
         })
         .catch(function (error) {
 
           console.log(error);
-          $("#gradery-request-modal").modal('hide');
+          $("#gradery-request-modal-" + vinst.$route.params.course_group_id).modal('hide');
           vinst.getCourseGroupTAs();
           alert('خطا در ثبت درخواست');
 
