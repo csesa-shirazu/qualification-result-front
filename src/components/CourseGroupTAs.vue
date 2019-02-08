@@ -103,6 +103,11 @@
               {{ grader.grader_profile.first_name }} {{ grader.grader_profile.last_name }}
             </div>
           </div>
+          <div style="width: 100%; display: flex;" v-if="grader.stdno">
+            <div style="margin: auto; color: #000000;">
+              {{ grader.stdno }}
+            </div>
+          </div>
           <div style="width: 100%; display: flex;" v-if="grader.score">
             <div style="margin: auto; color: #000000;">
               امتیاز کل {{ grader.score }}
@@ -298,6 +303,7 @@ export default {
     },
     showGraderyRequestNote(graderyRequest){
       this.graderyRequest.enrollment_request_note = graderyRequest.enrollment_request_note;
+      let vinst = this;
       $("#gradery-request-modal-" + vinst.$route.params.course_group_id).modal('show');
     },
     getCourseGroupTAs: function(){
