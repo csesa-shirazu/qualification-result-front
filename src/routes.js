@@ -4,12 +4,18 @@ import Account from './components/account/Account.vue';
 import taProfile from './components/taProfile.vue';
 import CourseGroupTAs from './components/CourseGroupTAs.vue';
 import Courses from './components/Courses.vue';
+import NetworkSummerSchool from './components/NetworkSummerSchool.vue';
 
 export const routes = [
     {
         path: '',
         component: Courses,
         name: 'courses'
+    },
+    {
+        path: '/network-summer-school',
+        component: NetworkSummerSchool,
+        name: 'network-summer-school'
     },
     {
         path: '/c/g/:course_group_id',
